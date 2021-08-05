@@ -565,11 +565,17 @@ void TennGen::Set_Phi_Dist(Double_t pT , Double_t KF , Double_t Psi_1_event , Do
 
 //______________________________________________________________________________
   TennGen::TennGen()//constructor
+  : CentralityBin(0)
+  , Seed(0)
+  , HarmonicsFlag(5)
+  , EtaRange(0.9)
+  , PRINTQA(kFALSE)
+  , fDebugFlag(0) // no debug by default
 {
 
   //CentralityBin = 0;
   BkgdArray = new TClonesArray("TMCParticle" , 1000);
-  cout<<"about to make TF1's"<<endl;
+  if (fDebugFlag) cout<<"about to make TF1's"<<endl;
   pTdist_piPlus = new TF1("pTdist_piPlus",BlastWavedNdptTimesPt ,0,100,5); 
   pTdist_piPlus->SetNpx (1000);
   pTdist_piMinus = new TF1("pTdist_piMinus",BlastWavedNdptTimesPt ,0,100,5); 
@@ -735,7 +741,7 @@ void TennGen::Set_Phi_Dist(Double_t pT , Double_t KF , Double_t Psi_1_event , Do
 //______________________________________________________________________________
 TennGen::~TennGen()//destructor
 {
-  cout<<"You stepped into the destructor !!!"<<endl;
+  if (fDebugFlag) cout<<"You stepped into the destructor !!!"<<endl;
   delete BkgdArray;
   delete pTdist_piPlus;
   delete pTdist_piMinus;
@@ -797,7 +803,7 @@ TennGen::~TennGen()//destructor
 }
 
 void TennGen::InitializeBackground(){
-  cout<<"Now I am initializing background for centrality bin "<<CentralityBin<<endl;
+  if (fDebugFlag) cout<<"Now I am initializing background for centrality bin "<<CentralityBin<<endl;
   MyPrivateFunction(); //function for debugging purposes
   SetpiPlusParams();
   SetpiMinusParams();
@@ -822,19 +828,19 @@ void TennGen::InitializeBackground(){
   Psi_1 = new TRandom3(seed_psi_1);
   //Psi_1->Clear();
   //Psi_1->SetSeed((Seed*2.)+3);
-  cout << "Random Psi_1 Seed from .cxx = "<< (Psi_1->GetSeed()) <<" for Event " << endl;
+  if (fDebugFlag) cout << "Random Psi_1 Seed from .cxx = "<< (Psi_1->GetSeed()) <<" for Event " << endl;
   //Psi_1 = 0;
   UInt_t seed_psi_3 = (Seed*3)+2;
   Psi_3 = new TRandom3(seed_psi_3);
   //Psi_3->Clear();
   //Psi_3->SetSeed((Seed*3.)+2);
-  cout << "Random Psi_3 Seed from .cxx = "<< (Psi_3->GetSeed()) <<" for Event " << endl;
+  if (fDebugFlag) cout << "Random Psi_3 Seed from .cxx = "<< (Psi_3->GetSeed()) <<" for Event " << endl;
   //Psi_3 = 0;
   UInt_t seed_psi_5 = (Seed*5)*9;
   Psi_5 = new TRandom3(seed_psi_5);
   //Psi_5->Clear();
   //Psi_5->SetSeed((Seed*5.)*9);
-  cout << "Random Psi_5 Seed from .cxx = "<< (Psi_5->GetSeed()) <<" for Event " << endl;
+  if (fDebugFlag) cout << "Random Psi_5 Seed from .cxx = "<< (Psi_5->GetSeed()) <<" for Event " << endl;
   //Psi_5 = 0;
 
   UInt_t seed_uniform_random_phi = (Seed*3)*4;
@@ -878,11 +884,11 @@ void TennGen::CloserFunction(){
   }
 }
 void TennGen::MyPrivateFunction(){
-  cout<<"MY PRIVATE FUNCTION"<<endl;
+  if (fDebugFlag) cout<<"MY PRIVATE FUNCTION"<<endl;
 }
 
 void TennGen::GetRandomSeed(){
-  cout<<"\n\n\n\n\nCurrent Seed = "<<Seed<<"\n\n\n\n\n"<<endl;
+  if (fDebugFlag) cout<<"\n\n\n\n\nCurrent Seed = "<<Seed<<"\n\n\n\n\n"<<endl;
 }
 
 /*
@@ -890,8 +896,8 @@ void TennGen::GetRandomSeed(){
   if( (seed>=0) && (seed<=900000000) ) {
     pythia->SetMRPY(1, seed);                   // set seed
     pythia->SetMRPY(2, 0);                      // use new seed
-    cout<<"Random Seed : "<<seed<<endl;
-  } else {cout << "error: time " << seed << " is not valid" << endl; exit(2);}
+    if (fDebugFlag) cout<<"Random Seed : "<<seed<<endl;
+  } else {if (fDebugFlag) cout << "error: time " << seed << " is not valid" << endl; exit(2);}
    //____________________________________________________________________
   */
 //TF1 *pXdist;
@@ -1143,7 +1149,7 @@ void TennGen::SetpiZeroParams(){
 
 
 TClonesArray *TennGen::GetBackground(){
-  cout<<"Got Background"<<endl;
+  if (fDebugFlag) cout<<"Got Background"<<endl;
 
 //TF1 *TennGen::Random1(){
 
@@ -1186,38 +1192,38 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
 
   etadist = new TF1("etadist","[0]",-0.5*(EtaRange/0.5) , 0.5*(EtaRange/0.5));
   etadist->SetParameter(0,1.);
-  //cout << "\n\n\nRandom etadist Seed from .cxx = "<< (etadist->GetSeed()) <<" for Event " << endl;
+  //if (fDebugFlag) cout << "\n\n\nRandom etadist Seed from .cxx = "<< (etadist->GetSeed()) <<" for Event " << endl;
   
   Psi_1 = new TRandom3(New_Rand->Uniform(0 , 1000));
-  cout << "Random Psi_1 Seed from .cxx = "<< (Psi_1->GetSeed()) <<" for Event " << endl;
+  if (fDebugFlag) cout << "Random Psi_1 Seed from .cxx = "<< (Psi_1->GetSeed()) <<" for Event " << endl;
 
   Psi_3 = new TRandom3(New_Rand->Uniform(0 , 1000));
-  cout << "Random Psi_3 Seed from .cxx = "<< (Psi_3->GetSeed()) <<" for Event " << endl;
+  if (fDebugFlag) cout << "Random Psi_3 Seed from .cxx = "<< (Psi_3->GetSeed()) <<" for Event " << endl;
 
   Psi_5 = new TRandom3(New_Rand->Uniform(0 , 1000));
-  cout << "Random Psi_5 Seed from .cxx = "<< (Psi_5->GetSeed()) <<" for Event " << endl;
+  if (fDebugFlag) cout << "Random Psi_5 Seed from .cxx = "<< (Psi_5->GetSeed()) <<" for Event " << endl;
 
   Harmonics_Phi_Dist_Rand = new TRandom3(New_Rand->Uniform(0 , 1000));
-  cout << "Random Harmonics_Phi_Dist_Rand Seed from .cxx = "<< (Harmonics_Phi_Dist_Rand->GetSeed()) <<" for Event \n\n\n" << endl;
+  if (fDebugFlag) cout << "Random Harmonics_Phi_Dist_Rand Seed from .cxx = "<< (Harmonics_Phi_Dist_Rand->GetSeed()) <<" for Event \n\n\n" << endl;
   */
   //Psi_1_event.clear();
   //Psi_3_event.clear();
   //Psi_5_event.clear();
   Double_t Psi_1_event = Psi_1->Uniform( 0 , 2.0*TMath::Pi());
-  cout << "\n\n\nPsi_1 from .cxx = "<< Psi_1_event <<" for Event " << endl;
-  cout << "Random Psi_1 Seed from .cxx = "<< (Psi_1->GetSeed()) <<" for Event " << endl;
+  if (fDebugFlag) cout << "\n\n\nPsi_1 from .cxx = "<< Psi_1_event <<" for Event " << endl;
+  if (fDebugFlag) cout << "Random Psi_1 Seed from .cxx = "<< (Psi_1->GetSeed()) <<" for Event " << endl;
   Psi_1_h->Fill(Psi_1_event);
   Psi_2_h->Fill(0.);
   //Psi_1_event = (TMath::Pi()/2);
   Double_t Psi_3_event = Psi_3->Uniform( 0 , 2.0*TMath::Pi());
-  cout << "Psi_3 from .cxx = "<< Psi_3_event <<" for Event " << endl;
-  cout << "Random Psi_3 Seed from .cxx = "<< (Psi_3->GetSeed()) <<" for Event " << endl;
+  if (fDebugFlag) cout << "Psi_3 from .cxx = "<< Psi_3_event <<" for Event " << endl;
+  if (fDebugFlag) cout << "Random Psi_3 Seed from .cxx = "<< (Psi_3->GetSeed()) <<" for Event " << endl;
   Psi_3_h->Fill(Psi_3_event);
   Psi_4_h->Fill(0.);
   //Psi_3_event = (3*TMath::Pi()/2);
   Double_t Psi_5_event = Psi_5->Uniform( 0 , 2.0*TMath::Pi());
-  cout << "Psi_5 from .cxx = "<< Psi_5_event <<" for Event " << endl;
-  cout << "Random Psi_5 Seed from .cxx = "<< (Psi_5->GetSeed()) <<" for Event \n\n\n" << endl;
+  if (fDebugFlag) cout << "Psi_5 from .cxx = "<< Psi_5_event <<" for Event " << endl;
+  if (fDebugFlag) cout << "Random Psi_5 Seed from .cxx = "<< (Psi_5->GetSeed()) <<" for Event \n\n\n" << endl;
   Psi_5_h->Fill(Psi_5_event);
   //Psi_5_event = (5*TMath::Pi()/2);
 
@@ -1225,15 +1231,15 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
   for (Int_t n = 0 ; n < 7 ; n++){
     Npart = Npart + yield_arr[CentralityBin][n];
   }
-  //cout<<"Number of Total Particles for Centrality Bin "<<CentralityBin<<" = "<<Npart<<endl;
-  cout<<"\n\n\n\n\nSeed From the .cxx = "<<Seed<<"\n\n\n\n\n"<<endl;
+  //if (fDebugFlag) cout<<"Number of Total Particles for Centrality Bin "<<CentralityBin<<" = "<<Npart<<endl;
+  if (fDebugFlag) cout<<"\n\n\n\n\nSeed From the .cxx = "<<Seed<<"\n\n\n\n\n"<<endl;
   for( Int_t N = 0 ; N < yield_arr[CentralityBin][0] ; N++){ //piPlus , kF = 211
      
       if( N==0 ){
-        //cout<<"piPlus getting created now"<<endl;
+        //if (fDebugFlag) cout<<"piPlus getting created now"<<endl;
       }  
       
-      //cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
+      //if (fDebugFlag) cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
   
       TMCParticle *piPlus = (TMCParticle*)BkgdArray->ConstructedAt(N);
       /*
@@ -1243,7 +1249,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
       pTdist->SetParameter(3,piPlus_params[CentralityBin][3]);
       pTdist->SetParameter(4,piPlus_params[CentralityBin][4]);
       */
-      //cout<<"Params for iteration "<<N<<" set now"<<endl;
+      //if (fDebugFlag) cout<<"Params for iteration "<<N<<" set now"<<endl;
       Double_t pT = pTdist_piPlus->GetRandom();
 
 /*_________________________________________________________________________________*/
@@ -1281,11 +1287,11 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
       }
 
 /*_________________________________________________________________________________*/
-      //cout<<"pT for iteration "<<N<<" set now"<<endl;
+      //if (fDebugFlag) cout<<"pT for iteration "<<N<<" set now"<<endl;
       //phi.clear();
       if( HarmonicsFlag != 5){
         Set_Phi_Dist(pT , 211 , Psi_1_event , Psi_3_event , Psi_5_event);
-        //cout<<"\nGetting Phi for Pi+ now\n"<<endl;
+        //if (fDebugFlag) cout<<"\nGetting Phi for Pi+ now\n"<<endl;
         phi = Harmonics_Phi_Dist->GetRandom();
 
         v1_pi_h->Fill( pT , v1_pi->Eval( pT , 0.0 , 0.0 ,  0.0 ) );
@@ -1299,7 +1305,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
         v3_sq_h->Fill( v3_pi_eval1*v3_pi_eval1 );
         v4_sq_h->Fill( v4_pi_eval1*v4_pi_eval1 );
         v5_sq_h->Fill( v5_pi_eval1*v5_pi_eval1 );
-        //cout<<"you got your phi from the fourier"<<endl;
+        //if (fDebugFlag) cout<<"you got your phi from the fourier"<<endl;
       }
       else if(HarmonicsFlag == 5){
         phi = Harmonics_Phi_Dist_Rand->Uniform(0 , 2.0*TMath::Pi() );  
@@ -1309,7 +1315,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
         v3_pi_h->Fill( pT ,  0. );
         v4_pi_h->Fill( pT ,  0. );
         v5_pi_h->Fill( pT ,  0. ); 
-        //cout<<"phi is random noise"<<endl;
+        //if (fDebugFlag) cout<<"phi is random noise"<<endl;
       }
       //Double_t eta = etadist->GetRandom();
       Double_t eta = etadist->Uniform(-0.5*(EtaRange/0.5) , 0.5*(EtaRange/0.5));
@@ -1326,10 +1332,10 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
     for( Int_t N = yield_arr[CentralityBin][0] ; N < (yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1]) ; N++  ){  //piMinus , kF = -211
     
       if( N== yield_arr[CentralityBin][0] ){
-        //cout<<"piMinus getting created now"<<endl;
+        //if (fDebugFlag) cout<<"piMinus getting created now"<<endl;
       }
       
-      //cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
+      //if (fDebugFlag) cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
 
       TMCParticle *piMinus = (TMCParticle*)BkgdArray->ConstructedAt(N);
       /*
@@ -1379,7 +1385,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
       //phi.clear();
       if (HarmonicsFlag != 5){
         Set_Phi_Dist(pT , -211 , Psi_1_event , Psi_3_event , Psi_5_event);
-        //cout<<"\nGetting Phi for Pi- now\n"<<endl;
+        //if (fDebugFlag) cout<<"\nGetting Phi for Pi- now\n"<<endl;
         phi = Harmonics_Phi_Dist->GetRandom();
 
         v1_pi_h->Fill( pT , v1_pi->Eval( pT , 0.0 , 0.0 ,  0.0 ) );
@@ -1418,10 +1424,10 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
     for( Int_t N = (yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1]) ; N < (yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2]) ; N++){ //kPlus , kF = 321
     
       if( N == (yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1]) ){
-        //cout<<"kPlus getting created now"<<endl;
+        //if (fDebugFlag) cout<<"kPlus getting created now"<<endl;
       }
       
-      //cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
+      //if (fDebugFlag) cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
     
       TMCParticle *k_Plus = (TMCParticle*)BkgdArray->ConstructedAt(N);
       /*
@@ -1471,7 +1477,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
       //phi.clear();
       if (HarmonicsFlag != 5){
         //Set_Phi_Dist(pT , 321 , Psi_1_event , Psi_3_event , Psi_5_event);
-        //cout<<"\nGetting Phi for K+ now\n"<<endl;
+        //if (fDebugFlag) cout<<"\nGetting Phi for K+ now\n"<<endl;
         phi = Harmonics_Phi_Dist->GetRandom();
 
         v1_K_h->Fill( pT , v1_K->Eval( pT , 0.0 , 0.0 ,  0.0 ) );
@@ -1509,10 +1515,10 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
     for( Int_t N = (yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2]) ; N < ( yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2] + yield_arr[CentralityBin][3]) ; N++ ){ //kMinus , kF = -321
     
       if( N == (yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2]) ){
-        //cout<<"kMinus getting created now"<<endl;
+        //if (fDebugFlag) cout<<"kMinus getting created now"<<endl;
       }
       
-      //cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
+      //if (fDebugFlag) cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
     
       TMCParticle *kMinus = (TMCParticle*)BkgdArray->ConstructedAt(N);
       /*
@@ -1562,7 +1568,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
       //phi.clear();
       if (HarmonicsFlag != 5){
         Set_Phi_Dist(pT , -321 , Psi_1_event , Psi_3_event , Psi_5_event);
-        //cout<<"\nGetting Phi for K- now\n"<<endl;
+        //if (fDebugFlag) cout<<"\nGetting Phi for K- now\n"<<endl;
         phi = Harmonics_Phi_Dist->GetRandom();
 
         v1_K_h->Fill( pT , v1_K->Eval( pT , 0.0 , 0.0 ,  0.0 ) );
@@ -1600,10 +1606,10 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
     for( Int_t N = ( yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2] + yield_arr[CentralityBin][3])  ; N < ( yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2] + yield_arr[CentralityBin][3] + yield_arr[CentralityBin][4] ) ; N++ ){ //proton , kF = 2212
     
       if( N == ( yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2] + yield_arr[CentralityBin][3]) ){
-        //cout<<"p getting created now"<<endl;
+        //if (fDebugFlag) cout<<"p getting created now"<<endl;
       }
       
-      //cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
+      //if (fDebugFlag) cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
     
       TMCParticle *p = (TMCParticle*)BkgdArray->ConstructedAt(N);
       /*
@@ -1652,7 +1658,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
       //phi.clear();
       if(HarmonicsFlag != 5){
         Set_Phi_Dist(pT , 2212 , Psi_1_event , Psi_3_event , Psi_5_event);
-        //cout<<"\nGetting Phi for P now\n"<<endl;
+        //if (fDebugFlag) cout<<"\nGetting Phi for P now\n"<<endl;
         phi = Harmonics_Phi_Dist->GetRandom();
 
         v1_P_h->Fill( pT , v1_P->Eval( pT , 0.0 , 0.0 ,  0.0 ) );
@@ -1690,10 +1696,10 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
     for( Int_t N = ( yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2] + yield_arr[CentralityBin][3] + yield_arr[CentralityBin][4] )  ; N < ( yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2] + yield_arr[CentralityBin][3] + yield_arr[CentralityBin][4] + yield_arr[CentralityBin][5] ) ; N++ ){ //anti-proton , kF = -2212
     
       if( N == ( yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2] + yield_arr[CentralityBin][3] + yield_arr[CentralityBin][4] ) ){
-        //cout<<"pbar getting created now"<<endl;
+        //if (fDebugFlag) cout<<"pbar getting created now"<<endl;
       }
       
-      //cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
+      //if (fDebugFlag) cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
  
       TMCParticle *pbar = (TMCParticle*)BkgdArray->ConstructedAt(N);
       /*
@@ -1742,7 +1748,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
       //phi.clear();
       if(HarmonicsFlag != 5){
         Set_Phi_Dist(pT , -2212 , Psi_1_event , Psi_3_event , Psi_5_event);
-        //cout<<"\nGetting Phi for Pbar now\n"<<endl;
+        //if (fDebugFlag) cout<<"\nGetting Phi for Pbar now\n"<<endl;
         phi = Harmonics_Phi_Dist->GetRandom();
 
         v1_P_h->Fill( pT , v1_P->Eval( pT , 0.0 , 0.0 ,  0.0 ) );
@@ -1781,10 +1787,10 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
     for( Int_t N = ( yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2] + yield_arr[CentralityBin][3] + yield_arr[CentralityBin][4] + yield_arr[CentralityBin][5] )  ; N < Npart ; N++ ){ //piZer0 , kF = 111
     
           if( N == ( yield_arr[CentralityBin][0] + yield_arr[CentralityBin][1] + yield_arr[CentralityBin][2] + yield_arr[CentralityBin][3] + yield_arr[CentralityBin][4] + yield_arr[CentralityBin][5] ) ){
-        //cout<<"piZero getting created now"<<endl;
+        //if (fDebugFlag) cout<<"piZero getting created now"<<endl;
       }
       
-      //cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
+      //if (fDebugFlag) cout<<"Loop Iteration in .cxx  is at "<<N<<"th iteration"<<endl;
     
         
       TMCParticle *piZero = (TMCParticle*)BkgdArray->ConstructedAt(N);
@@ -1836,7 +1842,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
       //phi.clear();
       if(HarmonicsFlag != 5){
         Set_Phi_Dist(pT , 111 , Psi_1_event , Psi_3_event , Psi_5_event);
-        //cout<<"\nGetting Phi for PiZero now\n"<<endl;
+        //if (fDebugFlag) cout<<"\nGetting Phi for PiZero now\n"<<endl;
         phi = Harmonics_Phi_Dist->GetRandom();
 
         v1_pi_h->Fill( pT , v1_pi->Eval( pT , 0.0 , 0.0 ,  0.0 ) );
@@ -1913,7 +1919,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
   }
 
   else if(PRINTQA == kTRUE ){ //void out the harmonics whic are 0
-    //cout<<"did you step inside the reset IF ??"<<endl;
+    //if (fDebugFlag) cout<<"did you step inside the reset IF ??"<<endl;
      //Int_t HF = 0; // set harmonics flag (0 : v1 - v5) , (1 : v2 - v5) , (2: v3 - v5) , (3: v1 - v4) , (4: v1 - v3) , (5: no vn, uniform phi) , (6: v1 - v2 , v4 - v5) , (7: v1 -v3 , v5) , (8: v1 , v3 - v5) , (9: v1 only) , (10: v2 only) , (11: v3 only) , (12: v4 only) , (13: v5 only)  // HF ---> HarmonicsFlag
 
     if( HarmonicsFlag == 1){ // v2-v5
@@ -2060,7 +2066,7 @@ const Double_t yield_arr[8][7] = { { (TMath::Ceil((EtaRange * 654)/0.5)) , (TMat
 
   }
 
-  cout<<"\n\nthe number of entries in the bkgd array per event = "<<BkgdArray->GetEntries()<<endl;
+  if (fDebugFlag) cout<<"\n\nthe number of entries in the bkgd array per event = "<<BkgdArray->GetEntries()<<endl;
   //return BkgdArray;
   return BkgdArray;
 

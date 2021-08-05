@@ -190,6 +190,8 @@ private:
   TH1D *Psi_4_h = new TH1D("Psi_4_h" , "#Psi_{4} for all events thrown" , 100,-(TMath::Pi())/2,(5/2)*TMath::Pi() );
   TH1D *Psi_5_h = new TH1D("Psi_5_h" , "#Psi_{5} for all events thrown" , 100,-(TMath::Pi())/2,(5/2)*TMath::Pi() );
 
+  Bool_t fDebugFlag;
+
 public:
   TennGen();
   virtual ~TennGen();
@@ -204,6 +206,8 @@ public:
 
   //TF1 *Random1();
   //TClonesArray* GetBackground() = (TClonesArray*) Rando -> GetRandom(Double_t xmin = 0. Double_t xmax = 1.);
+
+  void SetDebugFlag(Int_t _flag) {fDebugFlag = _flag;}
 
    TClonesArray *GetBackground();
    ClassDef(TennGen,1)  //Event structure
