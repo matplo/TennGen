@@ -20,6 +20,7 @@
 #include "TMCParticle.h"
 #include "TRandom3.h"
 
+using namespace std;
 
 ClassImp(TennGen)
 //____________________________________________________________________________________________________________________//
